@@ -45,13 +45,23 @@ data.lm2 <- lm(Cmin~Biochar+Microbe, data=data1)
 anova(data.lm2)
 summary(data.lm2)
 
+#graphing C mineralization boxplots
+library(dplyr)
+
 #graphing C mineralization by microbes only
-p <- ggplot(data1, aes(x=Biochar, y=Cmin, color=as.factor(Microbe), shape=as.factor(Plant))) + scale_shape_manual(name="Plant Treatment", values=c(16,17), labels = c("No Plant", "+ Plant")) + scale_color_manual(name="Microbe Treatment", values=c("black","purple"), labels = c("+ Microbes", "No Microbes")) + stat_summary(fun.data=mean_cl_boot,size=1.5, position=position_dodge(width=1)) 
-p1=p+geom_smooth(method="lm")
-p1 + theme_bw() 
-p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) + labs(x="Percent Biochar", y=expression(paste("(", mu,'g ',CO[2],'-C ',g^{-1},' soil ',hr^{-1},')'))) + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1))
+p1 <- ggplot(data1, aes(x=Biochar, y=Cmin, color=as.factor(Microbe), shape=as.factor(Plant))) + scale_shape_manual(name="Plant Treatment", values=c(16,17), labels = c("No Plant", "+ Plant")) + scale_color_manual(name="Microbe Treatment", values=c("black","purple"), labels = c("+ Microbes", "No Microbes")) + stat_summary(fun.data=mean_cl_boot,size=1, position=position_dodge(width=1.5)) 
+#p1=p+geom_smooth(method="lm")
+p1 + theme_bw()
+p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1)) + theme(axis.ticks.length=unit(0.3,"cm")) + labs(x="Percent Biochar", y=expression(paste("(", mu,'g ',CO[2],'-C ',g^{-1},' soil ',hr^{-1},')'))) + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1))
 
 ggsave("../figures/Cmin.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
+
+#graphing C mineralization - facet
+p1 <- ggplot(data1, aes(x=Biochar, y=Cmin, color=as.factor(Plant))) + scale_color_manual(name="Plant Treatment", values=c("darkgray","darkgreen"), labels = c("No Plant", "Plant")) + stat_summary(fun.data=mean_cl_boot,size=1, position=position_dodge(width=1.5)) + facet_wrap(~Microbe)
+p1 + theme_bw() 
+p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1)) + theme(axis.ticks.length=unit(0.3,"cm")) + labs(x="Percent Biochar", y=expression(paste("(", mu,'g ',CO[2],'-C ',g^{-1},' soil ',hr^{-1},')'))) + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1))+ theme(legend.position = "top")
+
+ggsave("../figures/Cmin_facet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
 ```
 # Data Analysis - Shoot Biomass
 ```{r}
@@ -66,6 +76,14 @@ p1 + theme_bw()
 p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) +  xlab("Percent Biochar") + ylab("Plant Shoot Biomass (g)") + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1))
 
 ggsave("../figures/Shoot.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
+
+#graphing shoot biomass microbes x biochar - facet
+p1 <- ggplot(data1, aes(x=Biochar, y=ShootMass_g, color=as.factor(Plant))) + scale_color_manual(name="Plant Treatment", values=c("darkgreen","darkgreen")) + stat_summary(fun.data=mean_cl_boot,size=1, position=position_dodge(width=1.5)) + facet_wrap(~Microbe)
+p1 + theme_bw() 
+p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) +  xlab("Percent Biochar") + ylab("Plant Shoot Biomass (g)") + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1))+ theme(legend.position = "top")
+
+ggsave("../figures/Shoot_facet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
+
 ```
 # Data Analysis - Root Biomass
 ```{r}
@@ -79,6 +97,11 @@ p1=p+geom_smooth(method="lm")
 p1 + theme_bw() 
 p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) +  xlab("Percent Biochar") + ylab("Plant Root Biomass (g)") + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1))
 ggsave("../figures/Root.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
+
+#graphing root biomass microbes x biochar - facet
+p1 <- ggplot(data1, aes(x=Biochar, y=RootMass_g, color=as.factor(Plant))) + scale_color_manual(name="Plant Treatment", values=c("darkgreen","darkgreen")) + stat_summary(fun.data=mean_cl_boot,size=1, position=position_dodge(width=1.5)) + facet_wrap(~Microbe)
+p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) +  xlab("Percent Biochar") + ylab("Plant Root Biomass (g)") + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1)) + theme(legend.position = "top")
+ggsave("../figures/Root_facet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
 ```
 
 # Data Analysis - testing moisture impact on plant biomass
@@ -116,6 +139,11 @@ p1=p+geom_smooth(method="lm")
 p1 + theme_bw() 
 p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) +  xlab("Percent Biochar") + ylab("Total Organic Carbon (%) in soil") + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1))
 ggsave("../figures/SoilC.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
+
+#graphing soil C microbes x biochar - facet
+p1 <- ggplot(data1, aes(x=Biochar, y=PercentC_Soil, color=as.factor(Plant))) + scale_color_manual(name="Plant Treatment", values=c("darkgray","darkgreen"), labels = c("No Plant", "Plant")) + stat_summary(fun.data=mean_cl_boot,size=1, position=position_dodge(width=1.5)) + facet_wrap(~Microbe)
+p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) +  xlab("Percent Biochar") + ylab("Total Organic Carbon (%) in soil") + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1)) + theme(legend.position = "top") + theme(legend.position = "top")
+ggsave("../figures/SoilC_facet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
 ```
 # Data Analysis - Soil N
 ```{r}
@@ -129,6 +157,11 @@ p1=p+geom_smooth(method="lm")
 p1 + theme_bw() 
 p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) +  xlab("Percent Biochar") + ylab("Total Nitrogen (%) in soil") + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1))
 ggsave("../figures/SoilN.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
+
+#graphing soil N microbes x biochar - facet
+p1 <- ggplot(data1, aes(x=Biochar, y=PercentN_Soil, color=as.factor(Plant))) + scale_color_manual(name="Plant Treatment", values=c("darkgray","darkgreen"), labels = c("No Plant", "Plant")) + stat_summary(fun.data=mean_cl_boot,size=1, position=position_dodge(width=1.5)) + facet_wrap(~Microbe)
+p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) +  xlab("Percent Biochar") + ylab("Total Nitrogen (%) in soil") + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1)) + theme(legend.position = "top")
+ggsave("../figures/SoilN_facet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
 ```
 # Data Analysis - Soil C:N ratio
 ```{r}
@@ -142,6 +175,11 @@ p1=p+geom_smooth(method="lm")
 p1 + theme_bw() 
 p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) +  xlab("Percent Biochar") + ylab("Soil C/N ratio (wt/wt)") + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1))
 ggsave("../figures/SoilCNratio.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
+
+#graphing soil C:N ratio microbes x biochar - facet
+p1 <- ggplot(data1, aes(x=Biochar, y=CNratio_Soil, color=as.factor(Plant))) + scale_color_manual(name="Plant Treatment", values=c("darkgray","darkgreen"), labels = c("No Plant", "Plant")) + stat_summary(fun.data=mean_cl_boot,size=1, position=position_dodge(width=1.5)) + facet_wrap(~Microbe)
+p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) +  xlab("Percent Biochar") + ylab("Soil C/N ratio (wt/wt)") + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1)) + theme(legend.position = "top")
+ggsave("../figures/SoilCNratio_facet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
 ```
 # Data Analysis - Soil delta13C
 ```{r}
@@ -153,8 +191,13 @@ summary(data.lm)
 p <- ggplot(data1, aes(x=Biochar, y=X13C_Soil, color=as.factor(Microbe), shape=as.factor(Plant))) + scale_shape_manual(name="Plant Treatment", values=c(16,17), labels = c("No Plant", "+ Plant")) + scale_color_manual(name="Microbe Treatment", values=c("black","purple"), labels = c("+ Microbes", "No Microbes")) + stat_summary(fun.data=mean_cl_boot,size=1.5, position=position_dodge(width=1)) 
 p1=p+geom_smooth(method="lm")
 p1 + theme_bw() 
-p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) +  xlab("Percent Biochar") + ylab(expression(paste(delta^{13}, "C (\u2030) in soil"))) + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1))
+p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) +  xlab("Percent Biochar") + ylab(expression(paste(delta^{13}, "C (\u2030) in soil"))) + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1)) 
 ggsave("../figures/Soil_13C.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
+
+#graphing soil delta 13C microbes x biochar - facet
+p1 <- ggplot(data1, aes(x=Biochar, y=X13C_Soil, color=as.factor(Plant))) + scale_color_manual(name="Plant Treatment", values=c("darkgray","darkgreen"), labels = c("No Plant", "Plant")) + stat_summary(fun.data=mean_cl_boot,size=1, position=position_dodge(width=1.5)) + facet_wrap(~Microbe)
+p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) +  xlab("Percent Biochar") + ylab(expression(paste(delta^{13}, "C (\u2030) in soil"))) + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1)) + theme(legend.position = "top")
+ggsave("../figures/Soil_13C_facet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
 ```
 # Data Analysis - Soil delta15N
 ```{r}
@@ -168,6 +211,11 @@ p1=p+geom_smooth(method="lm")
 p1 + theme_bw() 
 p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) +  xlab("Percent Biochar") + ylab(expression(paste(delta^{15}, "N (\u2030) in soil"))) + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1))
 ggsave("../figures/Soil_15N.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
+
+#graphing soil delta 15N microbes x biochar - facet
+p1 <- ggplot(data1, aes(x=Biochar, y=X15N_Soil, color=as.factor(Plant))) + scale_color_manual(name="Plant Treatment", values=c("darkgray","darkgreen"), labels = c("No Plant", "Plant")) + stat_summary(fun.data=mean_cl_boot,size=1, position=position_dodge(width=1.5)) + facet_wrap(~Microbe)
+p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) +  xlab("Percent Biochar") + ylab(expression(paste(delta^{15}, "N (\u2030) in soil"))) + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1)) + theme(legend.position = "top")
+ggsave("../figures/Soil_15N_facet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
 ```
 # Data Analysis - shoots delta13C
 ```{r}
@@ -181,6 +229,11 @@ p1=p+geom_smooth(method="lm")
 p1 + theme_bw() 
 p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) +  xlab("Percent Biochar") + ylab(expression(paste(delta^{13}, "C (\u2030) in shoots"))) + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1)) 
 ggsave("../figures/shoots_13C.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
+
+#graphing shoots delta 13C microbes x biochar - facet
+p1 <- ggplot(data1, aes(x=Biochar, y=X13C_Shoots, color=as.factor(Plant))) + scale_color_manual(name="Plant Treatment", values=c("darkgreen","darkgreen")) + stat_summary(fun.data=mean_cl_boot,size=1, position=position_dodge(width=1.5)) + facet_wrap(~Microbe)
+p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) +  xlab("Percent Biochar") + ylab(expression(paste(delta^{13}, "C (\u2030) in shoots"))) + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1)) + theme(legend.position = "top")
+ggsave("../figures/shoots_13C_facet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
 ```
 # Data Analysis - shoots delta15N
 ```{r}
@@ -194,6 +247,11 @@ p1=p+geom_smooth(method="lm")
 p1 + theme_bw() 
 p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) +  xlab("Percent Biochar") + ylab(expression(paste(delta^{15}, "N (\u2030) in shoots"))) + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1)) 
 ggsave("../figures/shoots_15N.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
+
+#graphing shoots delta 15N microbes x biochar - facet
+p1 <- ggplot(data1, aes(x=Biochar, y=X15N_Shoots, color=as.factor(Plant))) + scale_color_manual(name="Plant Treatment", values=c("darkgreen","darkgreen")) + stat_summary(fun.data=mean_cl_boot,size=1, position=position_dodge(width=1.5)) + facet_wrap(~Microbe)
+p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) +  xlab("Percent Biochar") + ylab(expression(paste(delta^{15}, "N (\u2030) in shoots"))) + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1)) + theme(legend.position = "top")
+ggsave("../figures/shoots_15N_facet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
 ```
 # Data Analysis - Roots delta13C
 ```{r}
@@ -207,6 +265,11 @@ p1=p+geom_smooth(method="lm")
 p1 + theme_bw() 
 p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) +  xlab("Percent Biochar") + ylab(expression(paste(delta^{13}, "C (\u2030) in roots"))) + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1)) 
 ggsave("../figures/Roots_13C.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
+
+#graphing roots delta 13C microbes x biochar - facet
+p1 <- ggplot(data1, aes(x=Biochar, y=X13C_Roots, color=as.factor(Plant))) + scale_color_manual(name="Plant Treatment", values=c("darkgreen","darkgreen")) + stat_summary(fun.data=mean_cl_boot,size=1, position=position_dodge(width=1.5)) + facet_wrap(~Microbe)
+p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) +  xlab("Percent Biochar") + ylab(expression(paste(delta^{13}, "C (\u2030) in roots"))) + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1)) + theme(legend.position = "top")
+ggsave("../figures/Roots_13C_facet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
 ```
 # Data Analysis - Roots delta15N
 ```{r}
@@ -220,4 +283,9 @@ p1=p+geom_smooth(method="lm")
 p1 + theme_bw() 
 p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) +  xlab("Percent Biochar") + ylab(expression(paste(delta^{15}, "N (\u2030) in roots"))) + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1)) 
 ggsave("../figures/Roots_15N.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
+
+#graphing roots delta 15N microbes x biochar - facet
+p1 <- ggplot(data1, aes(x=Biochar, y=X15N_Roots, color=as.factor(Plant))) + scale_color_manual(name="Plant Treatment", values=c("darkgreen","darkgreen")) + stat_summary(fun.data=mean_cl_boot,size=1, position=position_dodge(width=1.5)) + facet_wrap(~Microbe)
+p1 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +theme(axis.title=element_text(vjust=1,size=18,face="bold"), axis.text=element_text(size=16), axis.text.x = element_text(vjust=0.65, hjust=0.5, size=16), panel.border = element_rect(colour = "black",size=1.25)) + theme(axis.ticks.length=unit(0.3,"cm")) +  xlab("Percent Biochar") + ylab(expression(paste(delta^{15}, "N (\u2030) in roots"))) + theme(strip.text.x = element_text(size=18, face="bold"), strip.text.y = element_text(size=18, face="bold"), strip.background = element_rect(colour="black", fill="white", size=1)) + theme(legend.position = "top")
+ggsave("../figures/Roots_15N_facet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=NA, height=NA, dpi=300, limitsize=TRUE)
 ```
