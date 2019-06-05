@@ -7,11 +7,11 @@ For information regarding the project, please visit: [update with publication in
 
 ## We address the following questions
 
-* **Aim)**: How does pyrogenic organic carbon (i.e., biochar) and soil microbes influence plant productivity and soil content? 
+* **Aim)**: How does pyrogenic organic carbon (i.e., biochar) and soil microbes influence plant productivity and soil carbon and nitrogen content? 
 
 ### Repo Contents
 
-* **analyses:**: An R Markdown file that includes R script written by Mike McCoy, Mario Muscarella, and Ariane Peralta containing functions used in analysis of soil and microbial sequence data.
+* **analyses:**: An R Markdown file that includes R script written by Ariane Peralta containing functions used in analysis of plant, soil, and microbial respiration data.
 
 * **bin:** 
 	* *summarySE.R*: An R script written by [Micah Allen et al.](https://github.com/RainCloudPlots/RainCloudPlots/)
