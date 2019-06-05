@@ -14,14 +14,24 @@ Project Description:
 
 # Initial Setup
 ```{r}
-rm(list=ls())
-setwd("~/GitHub/ECU-BGC-ME_2017")
+#PC - set WD manually by Session -> Set Working Directory -> Choose Directory...
+if(Sys.info()[1] == "Darwin"){
+  setwd("~/GitHub/ECU-BGC-ME_2017/analysis/")
+} else {
+  # setwd(choose.dir())
+}
+rm(list = ls())
+
 se <- function(x, ...){sd(x, na.rm = TRUE)/sqrt(length(na.omit(x)))}
 ci <- function(x, ...){1.96 * sd(x,na.rm = TRUE)}
 
 # Code Dependencies
 require("reshape")
 require("ggplot2")
+require("dplyr")
+require("ggpubr")
+require("car")
+require("cowplot") #this package makes default no grids
 ```
 
 # Input Data
@@ -31,6 +41,42 @@ str(data1)
 #NOTE: all parametric tests were run without testing for assumptions to simplify
 #code for the class - so the 'proper' way to run these stats is to test for
 #normality and homogeneity of variances or modeling fitting approaches
+```
+#Rain Clouds Graphs
+```{r rain clouds, include=FALSE}
+#Rainclouds
+source("../bin/R_rainclouds.R")
+source("../bin/summarySE.R")
+#source("../bin/simulateData.R")
+
+#change Biochar in original df to 1,2,3,4,5 instead of 0,2,5,10,20
+Biochar.rc <- as.numeric(data1$Biochar)
+data1.rc <- cbind(data1,Biochar.rc)
+data1.rc$Biochar.rc <- recode(data1.rc$Biochar.rc,"0=1;2=2;5=3;10=4;20=5")
+data1.rc
+
+group <- interaction(data1$Microbe,data1$Plant)
+group
+
+#Rainclouds across biochar gradient - Cmin
+p1 <- ggplot(data1.rc, aes(x = as.factor(Biochar.rc), y = Cmin, fill = group), size=16) +
+  geom_flat_violin(aes(fill = group),position = position_nudge(x = .1, y = 0), adjust = 1.5, trim = FALSE, alpha = .5, colour = NA) +
+  geom_point(aes(x = as.numeric(Biochar.rc)-.15, y = Cmin, colour = group),position = position_jitter(width = .05), size = 1.5, shape = 20) +
+  geom_boxplot(aes(x = as.factor(Biochar.rc), y = Cmin, fill = group),outlier.shape = NA, alpha = .5, width = .1, colour = "black") + labs(x = "Biochar", y = "C mineralization") + scale_x_discrete(labels=c("1" = "0", "2" = "2", "3" = "5", "4" = "10", "5" = "20"))
+  #+ scale_fill_manual(name="Site", values=c("darkgreen","cyan"))+ scale_colour_manual(name="Site", values=c("darkgreen","cyan"))
+p1
+
+ggsave("../figures/Figure_Cmin_rainclouds.png", plot=last_plot(), device=NULL, path=NULL, scale=1,  width=12, height=6, dpi=300, limitsize=TRUE)
+
+#Rainclouds across biochar gradient - ShootMass_g
+p2 <- ggplot(data1.rc, aes(x = as.factor(Biochar.rc), y = ShootMass_g, fill = group), size=16) +
+  geom_flat_violin(aes(fill = group),position = position_nudge(x = .1, y = 0), adjust = 1.5, trim = FALSE, alpha = .5, colour = NA) +
+  geom_point(aes(x = as.numeric(Biochar.rc)-.15, y = ShootMass_g, colour = group),position = position_jitter(width = .05), size = 1.5, shape = 20) +
+  geom_boxplot(aes(x = as.factor(Biochar.rc), y = ShootMass_g, fill = group),outlier.shape = NA, alpha = .5, width = .1, colour = "black") + labs(x = "Biochar", y = "ShootMass_g") + scale_x_discrete(labels=c("1" = "0", "2" = "2", "3" = "5", "4" = "10", "5" = "20"))
+  #+ scale_fill_manual(name="Site", values=c("darkgreen","cyan"))+ scale_colour_manual(name="Site", values=c("darkgreen","cyan"))
+p2
+
+ggsave("../figures/Figure_ShootMass_rainclouds.png", plot=last_plot(), device=NULL, path=NULL, scale=1,  width=12, height=6, dpi=300, limitsize=TRUE)
 ```
 
 # Data Analysis - Carbon Mineralization
